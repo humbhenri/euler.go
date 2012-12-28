@@ -121,6 +121,30 @@ func Palindrome(s string) bool {
 	return s == buffer.String()
 }
 
+func ProperDivisors(n int64) *list.List {
+	divs := list.New()
+	divs.PushBack(int64(1))
+	for i := int64(2); i <= (int64(math.Sqrt(float64(n)))); i++ {
+		if n%i == 0 {
+			divs.PushBack(i)
+			divs.PushBack(n / i)
+		}
+	}
+	divs.PushBack(n)
+	return divs
+}
+
+func TriangNumbers() func() int64 {
+	var inc int64 = 1
+	var triang int64 = 1
+	return func() int64 {
+		inc++
+		n := triang
+		triang += inc
+		return n
+	}
+}
+
 func problem2() {
 	fib := fibonacci()
 	val := fib()
@@ -201,6 +225,16 @@ func problem10() {
 	fmt.Println(sum)
 }
 
+func problem12() {
+	t := TriangNumbers()
+	for {
+		if n := t(); ProperDivisors(n).Len() > 500 {
+			fmt.Println(n)
+			break
+		}
+	}
+}
+
 func main() {
-	problem10()
+	problem12()
 }
