@@ -4,7 +4,10 @@ import (
 	"bytes"
 	"container/list"
 	"fmt"
+	"io/ioutil"
 	"math"
+	"strconv"
+	"unicode"
 )
 
 // problem 1
@@ -26,20 +29,6 @@ func fibonacci() func() int {
 		a, b = b, a+b
 		return fib
 	}
-}
-
-func problem2() {
-	fib := fibonacci()
-	val := fib()
-	sum := 0
-	for val <= 4000000 {
-		if val%2 == 0 {
-			sum += val
-			fmt.Println(val)
-		}
-		val = fib()
-	}
-	fmt.Println(val)
 }
 
 func PrintList(l *list.List) {
@@ -124,9 +113,43 @@ func NextPrime() func() int64 {
 	}
 }
 
+func Palindrome(s string) bool {
+	var buffer bytes.Buffer
+	for i := len(s) - 1; i >= 0; i-- {
+		buffer.WriteByte(s[i])
+	}
+	return s == buffer.String()
+}
+
+func problem2() {
+	fib := fibonacci()
+	val := fib()
+	sum := 0
+	for val <= 4000000 {
+		if val%2 == 0 {
+			sum += val
+			fmt.Println(val)
+		}
+		val = fib()
+	}
+	fmt.Println(val)
+}
+
 func problem3() {
 	factors := Factors(600851475143)
 	fmt.Println(factors.Back().Value.(int64))
+}
+
+func problem4() {
+	largest := 0
+	for i := 100; i <= 999; i++ {
+		for j := 100; j < 999; j++ {
+			if Palindrome(strconv.Itoa(i*j)) && i*j > largest {
+				largest = i * j
+			}
+		}
+	}
+	fmt.Println(largest)
 }
 
 func problem7() {
@@ -138,6 +161,36 @@ func problem7() {
 	fmt.Println(n)
 }
 
+func problem8() {
+	buf, err := ioutil.ReadFile("prob8.data")
+	if err != nil {
+		panic(err.Error())
+	}
+	n := 5
+	largest := 0
+	data := make([]int, len(buf))
+	c := 0
+	runes := bytes.Runes(buf)
+	for i := 0; i < len(runes); i++ {
+		if unicode.IsDigit(runes[i]) {
+			data[c] = int(runes[i]) - 48
+			c++
+		}
+	}
+	fmt.Println(data)
+	for i := 0; i < len(data)-n; i++ {
+		prod := 1
+		for _, j := range data[i : i+n] {
+			prod *= j
+		}
+		if prod > largest {
+			fmt.Println("Position "+strconv.Itoa(i), data[i:i+n])
+			largest = prod
+		}
+	}
+	fmt.Println(largest)
+}
+
 func main() {
-	problem7()
+	problem8()
 }
