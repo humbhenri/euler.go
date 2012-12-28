@@ -191,6 +191,16 @@ func problem8() {
 	fmt.Println(largest)
 }
 
+func problem10() {
+	var max int64 = 2000000
+	var sum int64 = 0
+	primes := PrimeSieve(max)
+	for p := primes.Front(); p != nil; p = p.Next() {
+		sum += p.Value.(int64)
+	}
+	fmt.Println(sum)
+}
+
 func main() {
-	problem8()
+	problem10()
 }
