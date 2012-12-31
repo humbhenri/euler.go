@@ -130,8 +130,16 @@ func ProperDivisors(n int64) *list.List {
 			divs.PushBack(n / i)
 		}
 	}
-	divs.PushBack(n)
 	return divs
+}
+
+func SumProperDivisors(n int64) int64 {
+	divs := ProperDivisors(n)
+	sum := int64(0)
+	for i := divs.Front(); i != nil; i = i.Next() {
+		sum += i.Value.(int64)
+	}
+	return sum
 }
 
 func TriangNumbers() func() int64 {
@@ -143,6 +151,31 @@ func TriangNumbers() func() int64 {
 		triang += inc
 		return n
 	}
+}
+
+func Factorial(n int) int {
+	prod := 1
+	for i := 1; i <= n; i++ {
+		prod *= i
+	}
+	return prod
+}
+
+// see http://www.java2s.com/Tutorial/Java/0100__Class-Definition/RecursivemethodtofindallpermutationsofaString.htm
+func PermuteString(begin string, end string) []string {
+	var permutations []string
+	if len(end) <= 1 {
+		permutations = append(permutations, begin+end)
+		return permutations
+	} else {
+		for i := 0; i < len(end); i++ {
+			newString := end[0:i] + end[i+1:]
+			for _, s := range PermuteString(begin+end[i:i+1], newString) {
+				permutations = append(permutations, s)
+			}
+		}
+	}
+	return permutations
 }
 
 func problem2() {
@@ -235,6 +268,53 @@ func problem12() {
 	}
 }
 
+//Evaluate the sum of all the amicable numbers under 10000.
+func problem21() {
+	max := 10000
+	sums := make(map[int64]int64)
+	sum := int64(0)
+	for i := 1; i < max; i++ {
+		sums[int64(i)] = SumProperDivisors(int64(i))
+	}
+	for k, v := range sums {
+		v_, present := sums[v]
+		if present && v_ == k && v != k {
+			sum += k
+		}
+	}
+	fmt.Println(sum)
+}
+
+func problem43() {
+	sum := int64(0)
+	for _, i := range PermuteString("", "0123456789") {
+		if n, _ := strconv.Atoi(i[1:4]); n%2 != 0 {
+			continue
+		}
+		if n, _ := strconv.Atoi(i[2:5]); n%3 != 0 {
+			continue
+		}
+		if n, _ := strconv.Atoi(i[3:6]); n%5 != 0 {
+			continue
+		}
+		if n, _ := strconv.Atoi(i[4:7]); n%7 != 0 {
+			continue
+		}
+		if n, _ := strconv.Atoi(i[5:8]); n%11 != 0 {
+			continue
+		}
+		if n, _ := strconv.Atoi(i[6:9]); n%13 != 0 {
+			continue
+		}
+		if n, _ := strconv.Atoi(i[7:10]); n%17 != 0 {
+			continue
+		}
+		j, _ := strconv.Atoi(i)
+		sum += int64(j)
+	}
+	fmt.Println(sum)
+}
+
 func main() {
-	problem12()
+	problem43()
 }
